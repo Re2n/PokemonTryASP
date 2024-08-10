@@ -1,10 +1,14 @@
 ﻿using PokemonTryASP.Entities;
+using PokemonTryASP.Dto;
 namespace PokemonTryASP.Interface;
 
 public interface IWorkerRepository
 {
-    public Task<Worker> CreateAsync(Worker worker);
-    /*public Task<Worker> DeleteAsync(int workerId);
-    public Task<Worker> GetByIdAsync(int workerId);
-    public Task<ICollection<Worker>> GetAllAsync();*/
+    public Task<WorkerDto> CreateAsync(WorkerDto worker);
+    public Task<bool> DeleteAsync(int workerId);
+    public Task<WorkerDto> GetByIdAsync(int workerId);
+    public Task<ICollection<WorkerDto>> GetAllAsync();
+    public Task<ICollection<WorkerDto>> GetByCompanyId(int companyId);
+    public Task<ICollection<WorkerDto>> GetByDepartmentId(int companyId, int departmentId);
+    public Task<WorkerDto> UpdateAsync(int workerId, WorkerDtoUpdate worker);
 }

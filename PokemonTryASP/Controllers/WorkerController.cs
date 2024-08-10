@@ -16,7 +16,7 @@ public class WorkerController : Controller
         _workerRepository = workerRepository;
     }
 
-    [HttpPost]
+    [HttpPost("CreateWorker")]
     public async Task<IActionResult> CreateWorkerAsync(WorkerDto newWorker)
     {
         if (newWorker == null)
@@ -29,15 +29,60 @@ public class WorkerController : Controller
             return BadRequest(ModelState);
         }
         
-        var workerDb = new Worker
+        var workerDb = new WorkerDto
         {
             Name = newWorker.Name,
             Surname = newWorker.Surname,
             Phone = newWorker.Phone,
             CompanyId = newWorker.CompanyId,
-            Bobik = newWorker.Bobik
+            DepartmentId = newWorker.DepartmentId
         };
         await _workerRepository.CreateAsync(workerDb);
         return Ok(workerDb);
+    }
+
+    [HttpGet("GetAllWorkers")]
+    public async Task<IActionResult> GetAllWorkersAsync()
+    {
+        var workers = await _workerRepository.GetAllAsync();
+        return Ok(workers);
+    }
+
+    [HttpGet("GetWorkerById/{WorkerId}")]
+    public async Task<IActionResult> GetWorkerByIdAsync([FromRoute] int WorkerId)
+    {
+        var worker = await _workerRepository.GetByIdAsync(WorkerId);
+        return Ok(worker);
+    }
+
+    [HttpDelete("DeleteWorker/{WorkerId}")]
+    public async Task<IActionResult> DeleteWorkerAsync([FromRoute] int WorkerId)
+    {
+        return Ok(await _workerRepository.DeleteAsync(WorkerId));
+    }
+
+    [HttpGet("GetByCompanyId/{CompanyId}")]
+    public async Task<IActionResult> GetByCompanyId([FromRoute] int CompanyId)
+    {
+        var workers = await _workerRepository.GetByCompanyId(CompanyId);
+        return Ok(workers);
+    }
+
+    [HttpGet("GetByDepartmentId/{CompanyId}, {DepartmentId}")]
+    public async Task<IActionResult> GetByDepartmentId([FromRoute] int CompanyId, [FromRoute] int DepartmentId)
+    {
+        var workers = await _workerRepository.GetByDepartmentId(CompanyId, DepartmentId);
+        return Ok(workers);
+    }
+
+    [HttpPatch("WorkerUpdate/{WorkerId}")]
+    public async Task<IActionResult> UpdateWorker([FromRoute] int WorkerId, WorkerDtoUpdate worker)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        return Ok(await _workerRepository.UpdateAsync(WorkerId, worker));
     }
 }
